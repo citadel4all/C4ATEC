@@ -1,7 +1,7 @@
 const APIKEY = "04c35731a5ee918f014970082a0088b1";
 let currentPage = 1;
 const IMGPATH = "https://image.tmdb.org/t/p/w1280";
-const SEARCHAPI = `https://api.themoviedb.org/3/search/movie?&api_key=${APIKEY}&include_adult=false&query=`;
+const SEARCHAPI = `https://api.themoviedb.org/3/search/movie?&api_key=${APIKEY}&include_adult=false&with_genres=35&certification_country=US&certification.lte=PG&query=`;
 
 const main = document.createElement("div");
 main.id = "main-page";
@@ -94,7 +94,7 @@ function getClassByRate(vote) {
 
 // Pagination functionality
 function loadPage(page) {
-  const APIURL = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${APIKEY}&include_adult=false&page=${page}`;
+  const APIURL = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${APIKEY}&include_adult=false&with_genres=35&certification_country=US&certification.lte=PG&page=${page}`;
   getMovies(APIURL);
 }
 
