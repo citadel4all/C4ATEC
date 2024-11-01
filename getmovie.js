@@ -135,3 +135,7 @@ function showNotification(message) {
 
 // Initial load
 loadPage(currentPage); // Load the first page of movies
+function toggleMenu() {
+  const menu = document.querySelector('.menu');
+  menu.classList.toggle('show'); // Adds or removes the 'show' class to slide the menu
+}
