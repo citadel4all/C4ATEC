@@ -10,24 +10,16 @@ const form = document.getElementById("form");
 
 const search = document.getElementById("search");
 
-const notification = document.createElement("div");
-notification.id = "notification";
-notification.className = "notification";
-document.body.appendChild(notification);
-
 const pagination = document.createElement("div");
 pagination.className = "pagination";
-document.body.appendChild(pagination);
 
 const prevButton = document.createElement("button");
 prevButton.id = "prev";
 prevButton.textContent = "Previous";
-pagination.appendChild(prevButton);
 
 const nextButton = document.createElement("button");
 nextButton.id = "next";
 nextButton.textContent = "Next";
-pagination.appendChild(nextButton);
 
 // Placeholder for movies
 function displayPlaceholders() {
@@ -52,33 +44,19 @@ function displayPlaceholders() {
 }
 
 async function getMovies(url) {
-displayPlaceholders(); // Show placeholders immediately
-try {
+displayPlaceholders(); 
   const resp = await fetch(url);
-if (!resp.ok) throw new Error("Network response was not ok");
   const respData = await resp.json();
-
+  console.log(respData);
   showMovies(respData.results);
-}
-catch (error) {
-    console.error("Fetch error:", error);
-    showNotification("No network connection. Please try again later.");
-  }
 }
 
 function showMovies(movies) {
-
   main.innerHTML = "";
-
   movies.forEach((movie) => {
-
     const { poster_path, title, vote_average, overview } = movie;
-
-    // raja
     const movieEl = document.createElement("div");
-
     movieEl.classList.add("movie");
-
     movieEl.innerHTML = `
        <img src="${IMGPATH + poster_path}" alt="${title}"/>
      <div class="movie-info">
@@ -91,9 +69,11 @@ function showMovies(movies) {
      <a href="#" class="watch-now">Watch Now</a>
      </div>
      `;
-
     main.appendChild(movieEl)
   });
+document.body.appendChild(pagination);
+pagination.appendChild(prevButton);
+pagination.appendChild(nextButton);
 }
 
 function getClassByRate(vote) {
@@ -133,15 +113,6 @@ currentPage = 1; // Reset to page 1 for new searches
     search.value = "";
   }
 });
-
-// Notification display
-function showNotification(message) {
-  notification.innerText = message;
-  notification.classList.add("show");
-  setTimeout(() => {
-    notification.classList.remove("show");
-  }, 3000);
-}
 
 // Initial load
 loadPage(currentPage); // Load the first page of movies
