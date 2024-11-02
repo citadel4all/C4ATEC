@@ -1,22 +1,40 @@
 const APIKEY = '04c35731a5ee918f014970082a0088b1';
 
-const APIURL = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=04c35731a5ee918f014970082a0088b1&include_adult=false&with_genres=28,35,10751&certification_country=US&certification.lte=PG&page=1";
-
+const APIURL = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${APIKEY}&include_adult=false&with_genres=28,35,10751&certification_country=US&certification.lte=PG`;
 const IMGPATH = "https://image.tmdb.org/t/p/w1280";
-
-const SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key=04c35731a5ee918f014970082a0088b1&include_adult=false&with_genres=28,35,10751&certification_country=US&certification.lte=PG&query=";
+const SEARCHAPI = `https://api.themoviedb.org/3/search/movie?&api_key=${APIKEY}&include_adult=false&with_genres=28,35,10751&certification_country=US&certification.lte=PG&query=`;
 
 const main = document.getElementById("main-display");
 const form = document.getElementById("form");
 const search = document.getElementById("search");
+const pagination = document.createElement("div");
+pagination.classList.add("pagination");
+document.body.appendChild(pagination);
 
-getMovies(APIURL);
+// Create Previous and Next buttons
+const prevButton = document.createElement("button");
+prevButton.textContent = "Previous";
+prevButton.disabled = true;
+pagination.appendChild(prevButton);
 
-async function getMovies(url) {
-  const resp = await fetch(url);
+const nextButton = document.createElement("button");
+nextButton.textContent = "Next";
+pagination.appendChild(nextButton);
+
+let currentPage = 1;
+
+// Fetch movies on initial load
+getMovies(APIURL, currentPage);
+
+async function getMovies(url, page = 1) {
+  main.innerHTML = ""; // Clear previous content
+  const resp = await fetch(`${url}&page=${page}`);
   const respData = await resp.json();
-  console.log(respData);
   showMovies(respData.results);
+  
+  // Enable/Disable buttons based on page number
+  prevButton.disabled = page === 1;
+  nextButton.disabled = page === respData.total_pages;
 }
 
 function showMovies(movies) {
@@ -29,10 +47,9 @@ function showMovies(movies) {
     const movieEl = document.createElement("div");
     movieEl.classList.add("movie");
 
-
     // Placeholder image while loading
     const placeholder = document.createElement("div");
-   placeholder.classList.add("thumbnail-placeholder");
+    placeholder.classList.add("thumbnail-placeholder");
 
     // Actual image element
     const img = document.createElement("img");
@@ -69,16 +86,31 @@ function showMovies(movies) {
 }
 
 function getClassByRate(vote) {
-if (vote >= 8) {
-return 'green';
-} else if (vote >= 5) {
-return 'orange'
-} else {
-return 'red';
-}}
-
-form.addEventListener("submit", (e) => {
-e.preventDefault();
-const searchTerm = search.value; if (searchTerm) { getMovies(SEARCHAPI + searchTerm); search.value = "";
+  if (vote >= 8) return 'green';
+  else if (vote >= 5) return 'orange';
+  else return 'red';
 }
+
+// Search form event listener
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const searchTerm = search.value;
+  if (searchTerm) {
+    currentPage = 1; // Reset to page 1 for a new search
+    getMovies(`${SEARCHAPI}${searchTerm}`, currentPage);
+    search.value = ""; // Clear input
+  }
+});
+
+// Pagination buttons event listeners
+nextButton.addEventListener("click", () => {
+  currentPage++;
+  getMovies(APIURL, currentPage);
+});
+
+prevButton.addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    getMovies(APIURL, currentPage);
+  }
 });
