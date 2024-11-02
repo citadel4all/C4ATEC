@@ -52,9 +52,11 @@ displayPlaceholders();
 }
 
 function showMovies(movies) {
+  //clear main
   main.innerHTML = "";
   movies.forEach((movie) => {
     const { poster_path, title, vote_average, overview } = movie;
+    // raja
     const movieEl = document.createElement("div");
     movieEl.classList.add("movie");
     movieEl.innerHTML = `
@@ -66,7 +68,6 @@ function showMovies(movies) {
      <div class="overview">
      <h2>Overview:</h2>
      ${overview}
-     <a href="#" class="watch-now">Watch Now</a>
      </div>
      `;
     main.appendChild(movieEl)
