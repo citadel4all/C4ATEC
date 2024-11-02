@@ -1,12 +1,8 @@
 const APIKEY = '04c35731a5ee918f014970082a0088b1';
-
-const APIURL = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${APIKEY}&include_adult=false&with_genres=10751&certification_country=US&certification.lte=PG`;
+const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&query=family-friendly+anime&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false
+`;
 const IMGPATH = "https://image.tmdb.org/t/p/w1280";
-const SEARCHAPI = `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&include_adult=false&with_genres=10751&certification_country=US&certification.lte=PG&query=`;
-
 const main = document.getElementById("main-display");
-const form = document.getElementById("form");
-const search = document.getElementById("search");
 const pagination = document.createElement("div");
 pagination.classList.add("pagination");
 document.body.appendChild(pagination);
@@ -90,17 +86,6 @@ function getClassByRate(vote) {
   else if (vote >= 5) return 'orange';
   else return 'red';
 }
-
-// Search form event listener
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const searchTerm = search.value;
-  if (searchTerm) {
-    currentPage = 1; // Reset to page 1 for a new search
-    getMovies(`${SEARCHAPI}${searchTerm}`, currentPage);
-    search.value = ""; // Clear input
-  }
-});
 
 // Pagination buttons event listeners
 nextButton.addEventListener("click", () => {
