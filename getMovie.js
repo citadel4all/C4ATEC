@@ -10,27 +10,63 @@ const main = document.getElementById("main-display");
 const form = document.getElementById("form");
 const search = document.getElementById("search");
 
-getMovies(APIURL);async function getMovies(url) {
-const resp = await fetch(url);
-const respData = await resp.json(); 
-console.log(respData);
+getMovies(APIURL);
 
-showMovies(respData.results);}function showMovies(movies) {
+async function getMovies(url) {
+  const resp = await fetch(url);
+  const respData = await resp.json();
+  console.log(respData);
+  showMovies(respData.results);
+}
 
-main.innerHTML = "";
-movies.forEach((movie) => {
-const { poster_path, title, vote_average, overview } = movie;
-const movieEl = document.createElement("div");
-movieEl.classList.add("movie");
-movieEl.innerHTML = `
-<img src="${IMGPATH + poster_path}" alt="${title}"/> <div class="movie-info">
-<h3>${title}</h3>
-<span class="${getClassByRate(vote_average)}">${vote_average}</span>
-</div> <div class="overview"> <h2>Overview:</h2>
-${overview}
-</div>
-`; main.appendChild(movieEl)
-});}
+function showMovies(movies) {
+  main.innerHTML = ""; // Clear previous content
+
+  movies.forEach((movie) => {
+    const { poster_path, title, vote_average, overview } = movie;
+
+    // Create movie element
+    const movieEl = document.createElement("div");
+    movieEl.classList.add("movie");
+
+
+    // Placeholder image while loading
+    const placeholder = document.createElement("div");
+   placeholder.classList.add("thumbnail-placeholder");
+
+    // Actual image element
+    const img = document.createElement("img");
+    img.src = `${IMGPATH + poster_path}`;
+    img.alt = title;
+    img.style.display = "none"; // Hide image initially
+
+    // Display image only after it has fully loaded
+    img.onload = () => {
+      placeholder.style.display = "none"; // Hide placeholder
+      img.style.display = "block"; // Show the loaded image
+    };
+
+    // Movie content
+    const movieInfo = document.createElement("div");
+    movieInfo.classList.add("movie-info");
+    movieInfo.innerHTML = `
+      <h3>${title}</h3>
+      <span class="${getClassByRate(vote_average)}">${vote_average}</span>
+    `;
+
+    const movieOverview = document.createElement("div");
+    movieOverview.classList.add("overview");
+    movieOverview.innerHTML = `<h2>Overview:</h2>${overview}`;
+
+    // Append elements to movie container
+    movieEl.appendChild(placeholder);
+    movieEl.appendChild(img);
+    movieEl.appendChild(movieInfo);
+    movieEl.appendChild(movieOverview);
+
+    main.appendChild(movieEl); // Add movie to main container
+  });
+}
 
 function getClassByRate(vote) {
 if (vote >= 8) {
