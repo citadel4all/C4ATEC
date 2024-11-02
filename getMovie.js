@@ -6,7 +6,7 @@ const IMGPATH = "https://image.tmdb.org/t/p/w1280";
 
 const SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key=${APIKEY}&include_adult=false&with_genres=28,35,10751&certification_country=US&certification.lte=PG&query=";
 
-const main = document.getElementById("main");
+const main = document.getElementById("main-display");
 const form = document.getElementById("form");
 const search = document.getElementById("search");
 
