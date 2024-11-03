@@ -1,7 +1,7 @@
 const APIKEY = '04c35731a5ee918f014970082a0088b1';
 const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&query=family-friendly+action&with_genres=28&certification_country=US&certification.gte=PG&include_adult=false`;
-
 const IMGPATH = "https://image.tmdb.org/t/p/w1280";
+const DEFAULT_IMG = "https://via.placeholder.com/500x750?text=No+Image+Available"; // Path to a default image if poster is missing
 
 const main = document.getElementById("main-display");
 const pagination = document.createElement("div");
@@ -30,10 +30,16 @@ function searchMovies(searchTerm) {
 }
 
 async function getMovies(url, page = 1) {
-  main.innerHTML = ""; // Clear previous content
+  main.innerHTML = "<p>Loading movies...</p>"; // Show loading indicator
   try {
     const resp = await fetch(`${url}&page=${page}`);
     const respData = await resp.json();
+    
+    if (respData.results.length === 0) {
+      main.innerHTML = "<p>No movies found. Try a different search.</p>";
+      return;
+    }
+    
     showMovies(respData.results);
     
     // Enable/Disable buttons based on page number
@@ -61,7 +67,7 @@ function showMovies(movies) {
 
     // Actual image element
     const img = document.createElement("img");
-    img.src = `${IMGPATH + poster_path}`;
+    img.src = poster_path ? `${IMGPATH + poster_path}` : DEFAULT_IMG;
     img.alt = title;
     img.style.display = "none"; // Hide image initially
 
