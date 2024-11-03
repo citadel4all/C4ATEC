@@ -19,14 +19,16 @@ pagination.appendChild(nextButton);
 
 let currentPage = 1;
 
-// Fetch movies on initial load
-getMovies(APIURL, currentPage);
-
 // Function to fetch movies with a dynamic SEARCHTERM
 function searchMovies(searchTerm) {
+  if(!searchTerm){
+    // Fetch movies on initial load
+getMovies(APIURL, currentPage);
+  } else {
   const searchURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&query=family-friendly+${searchTerm}&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false`;
   currentPage = 1;  // Reset to the first page for new search
   getMovies(searchURL, currentPage);
+  }
 }
 
 async function getMovies(url, page = 1) {
