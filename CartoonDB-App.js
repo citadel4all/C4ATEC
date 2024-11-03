@@ -1,6 +1,5 @@
 const APIKEY = '04c35731a5ee918f014970082a0088b1';
-const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&query=family-friendly+anime&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false
-`;
+const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&query=family-friendly+anime&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false`;
 const IMGPATH = "https://image.tmdb.org/t/p/w1280";
 const main = document.getElementById("main-display");
 const pagination = document.createElement("div");
@@ -21,25 +20,27 @@ let currentPage = 1;
 
 // Function to fetch movies with a dynamic SEARCHTERM
 function searchMovies(searchTerm) {
-  if(searchTerm){
-    // Fetch movies on initial load
-getMovies(APIURL, currentPage);
-  } else {
-  const searchURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&query=family-friendly+suggest&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false`;
-  currentPage = 1;  // Reset to the first page for new search
-  getMovies(searchURL, currentPage);
-  }
+  const url = searchTerm
+    ? `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}&include_adult=false`
+    : APIURL;
+  currentPage = 1; // Reset to the first page for new search
+  getMovies(url, currentPage);
 }
 
 async function getMovies(url, page = 1) {
   main.innerHTML = ""; // Clear previous content
-  const resp = await fetch(`${url}&page=${page}`);
-  const respData = await resp.json();
-  showMovies(respData.results);
-  
-  // Enable/Disable buttons based on page number
-  prevButton.disabled = page === 1;
-  nextButton.disabled = page === respData.total_pages;
+  try {
+    const resp = await fetch(`${url}&page=${page}`);
+    const respData = await resp.json();
+    showMovies(respData.results);
+    
+    // Enable/Disable buttons based on page number
+    prevButton.disabled = page === 1;
+    nextButton.disabled = page === respData.total_pages;
+  } catch (error) {
+    console.error("Failed to fetch movies:", error);
+    main.innerHTML = "<p>Failed to load movies. Please try again later.</p>";
+  }
 }
 
 function showMovies(movies) {
