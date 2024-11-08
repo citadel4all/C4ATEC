@@ -25,8 +25,9 @@ let currentUrl = APIURL; // Store the current URL used for fetching movies
 
 // Function to fetch movies with a dynamic SEARCHTERM
 function searchMovies(searchTerm) {
-  const url = searchTerm ? getMovieUrlByIndustry(searchTerm) : APIURL;
-  currentUrl = url; // Update the current URL
+  const url = searchTerm ? getMovieUrlByIndustry(searchTerm)
+    : APIURL;
+    currentUrl = url; // Update the current URL
   currentPage = 1; // Reset to the first page for new search
   getMovies(currentUrl, currentPage);
 }
@@ -39,16 +40,16 @@ function getMovieUrlByIndustry(industry) {
 
   // Map industries to their corresponding region and language codes
   const industryMap = {
-    hollywood: { region: "US", originalLanguage: "en" },
+hollywood: { region: "US", originalLanguage: "en" },
     bollywood: { region: "IN", originalLanguage: "hi" },
     nollywood: { region: "NG", originalLanguage: "en" },
     chinese: { region: "CN", originalLanguage: "zh" },
     south-korean: { region: "KR", originalLanguage: "ko" },
     japanese: { region: "JP", originalLanguage: "ja" },
     australian: { region: "AU", originalLanguage: "en" },
-    canadian: { region: "CA", originalLanguage: "fr" },
+     canadian: { region: "CA", originalLanguage: "fr" },
     mexican: { region: "MX", originalLanguage: "es" },
-    argentine: { region: "AR", originalLanguage: "es" },
+    argentine: { region: "AR", originalLanguage: "es" }
   };
 
   // Set default values if industry not found in map
@@ -56,7 +57,7 @@ function getMovieUrlByIndustry(industry) {
     industryMap[industry] || {};
 
   // Construct the TMDb URL
-  const url = `${baseUrl}?api_key=${apiKey}&with_genres=${genre}&language=${language}&region=${region}&sort_by=popularity.desc&original_language=${originalLanguage}&certification_country=US&certification.gte=PG&include_adult=false`;
+  const url = `${baseUrl}?api_key=${apiKey}&with_genres=${genre}&language=${language}&region=${region}&sort_by=popularity.desc&original_language=${originalLanguage}`;
 
   return url;
 }
@@ -140,12 +141,12 @@ function getClassByRate(vote) {
 // Pagination buttons event listeners
 nextButton.addEventListener("click", () => {
   currentPage++;
-  getMovies(currentUrl, currentPage); // Use the current URL
+  getMovies(currentUrl, currentPage);
 });
 
 prevButton.addEventListener("click", () => {
   if (currentPage > 1) {
     currentPage--;
-    getMovies(currentUrl, currentPage); // Use the current URL
+    getMovies(currentUrl, currentPage);
   }
 });
