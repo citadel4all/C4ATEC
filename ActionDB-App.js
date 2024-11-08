@@ -25,7 +25,7 @@ let currentUrl = APIURL; // Store the current URL used for fetching movies
 
 // Function to fetch movies with a dynamic SEARCHTERM
 function searchMovies(searchTerm) {
-  const url = searchTerm ? getMovieUrlByIndustry(searchTerm)
+  const url = searchTerm ? 'https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&with_genres=28&certification_country=US&certification.gte=PG&include_adult=false`
     : APIURL;
     currentUrl = url; // Update the current URL
   currentPage = 1; // Reset to the first page for new search
