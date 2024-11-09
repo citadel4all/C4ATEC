@@ -19,14 +19,16 @@ nextButton.textContent = "Next";
 pagination.appendChild(nextButton);
 
 let currentPage = 1;
+let currentLink = APIURL;
 
 // Function to fetch movies with a dynamic SEARCHTERM
 function searchMovies(searchTerm) {
   const url = searchTerm
     ? `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}&include_adult=false`
     : APIURL;
+  currentLink = url;
   currentPage = 1; // Reset to the first page for new search
-  getMovies(url, currentPage);
+  getMovies(currentLink, currentPage);
 }
 
 async function getMovies(url, page = 1) {
@@ -108,12 +110,12 @@ function getClassByRate(vote) {
 // Pagination buttons event listeners
 nextButton.addEventListener("click", () => {
   currentPage++;
-  getMovies(APIURL, currentPage);
+  getMovies(currentLink, currentPage);
 });
 
 prevButton.addEventListener("click", () => {
   if (currentPage > 1) {
     currentPage--;
-    getMovies(APIURL, currentPage);
+    getMovies(currentLink, currentPage);
   }
 });
