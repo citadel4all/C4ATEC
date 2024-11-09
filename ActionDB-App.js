@@ -23,7 +23,13 @@ let currentLink = APIURL;
 
 // Function to fetch movies with a dynamic SEARCHTERM
 function searchMovies(searchTerm) {
-  const url = searchTerm && getMovieUrlByIndustry("Chinese") || APIURL;
+  let url;
+
+if (searchTerm) {
+  url = getMovieUrlByIndustry("bollywood");
+} else {
+  url = APIURL;
+}
   currentLink = url;
   currentPage = 1; // Reset to the first page for new search
   getMovies(currentLink, currentPage);
