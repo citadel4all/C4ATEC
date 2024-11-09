@@ -24,11 +24,40 @@ let currentLink = APIURL;
 // Function to fetch movies with a dynamic SEARCHTERM
 function searchMovies(searchTerm) {
   const url = searchTerm
-    ? `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}&include_adult=false`
+    ? getMovieUrlByIndustry(bollywood)
     : APIURL;
   currentLink = url;
   currentPage = 1; // Reset to the first page for new search
   getMovies(currentLink, currentPage);
+}
+function getMovieUrlByIndustry(industry) {
+  const baseUrl = "https://api.themoviedb.org/3/discover/movie";
+  const apiKey = "04c35731a5ee918f014970082a0088b1"; // Replace with your actual TMDb API key
+  const genre = "28"; // Action genre ID
+  const language = "en-US"; // Response language
+
+  // Map industries to their corresponding region and language codes
+  const industryMap = {
+hollywood: { region: "US", originalLanguage: "en" },
+    bollywood: { region: "IN", originalLanguage: "hi" },
+    nollywood: { region: "NG", originalLanguage: "en" },
+    chinese: { region: "CN", originalLanguage: "zh" },
+    south-korean: { region: "KR", originalLanguage: "ko" },
+    japanese: { region: "JP", originalLanguage: "ja" },
+    australian: { region: "AU", originalLanguage: "en" },
+     canadian: { region: "CA", originalLanguage: "fr" },
+    mexican: { region: "MX", originalLanguage: "es" },
+    argentine: { region: "AR", originalLanguage: "es" }
+  };
+
+  // Set default values if industry not found in map
+  const { region = "US", originalLanguage = "en" } =
+    industryMap[industry] || {};
+
+  // Construct the TMDb URL
+  const url = `${baseUrl}?api_key=${apiKey}&with_genres=${genre}&language=${language}&region=${region}&sort_by=popularity.desc&original_language=${originalLanguage}`;
+
+  return url;
 }
 
 async function getMovies(url, page = 1) {
