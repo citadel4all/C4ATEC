@@ -26,7 +26,7 @@ function searchMovies(searchTerm) {
   let url;
 
 if (searchTerm) {
-  url = getMovieUrlByIndustry("bollywood");
+  url = urlByIndustry("bollywood");
 } else {
   url = APIURL;
 }
@@ -34,7 +34,7 @@ if (searchTerm) {
   currentPage = 1; // Reset to the first page for new search
   getMovies(currentLink, currentPage);
 }
-function getMovieUrlByIndustry(industry) {
+function urlByIndustry(industry) {
   const baseUrl = "https://api.themoviedb.org/3/discover/movie";
   const apiKey = "04c35731a5ee918f014970082a0088b1"; // Replace with your actual TMDb API key
   const genre = "28"; // Action genre ID
