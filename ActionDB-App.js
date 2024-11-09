@@ -1,7 +1,7 @@
 const APIKEY = '04c35731a5ee918f014970082a0088b1';
 const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&with_genres=28&certification_country=US&certification.gte=PG&include_adult=false`;
 const IMGPATH = "https://image.tmdb.org/t/p/w1280";
-const DEFAULT_IMG = "https://via.placeholder.com/500x750?text=No+Image+Available"; // Path to a default image if poster is missing
+const DEFAULT_IMG = "https://via.placeholder.com/500x750?text=No+Image+Available";
 
 const main = document.getElementById("main-display");
 const pagination = document.createElement("div");
@@ -24,19 +24,22 @@ let currentLink = APIURL;
 // Function to fetch movies with a dynamic SEARCHTERM
 function searchMovies(searchTerm) {
   let url;
+  
+  // Use urlByIndustry function only if searchTerm is present
+  if (searchTerm) {
+    url = urlByIndustry(searchTerm.toLowerCase());
+  } else {
+    url = APIURL;
+  }
 
-if (searchTerm) {
-  url = urlByIndustry("bollywood");
-} else {
-  url = APIURL;
-}
   currentLink = url;
   currentPage = 1; // Reset to the first page for new search
   getMovies(currentLink, currentPage);
 }
+
 function urlByIndustry(industry) {
   const baseUrl = "https://api.themoviedb.org/3/discover/movie";
-  const apiKey = "04c35731a5ee918f014970082a0088b1"; // Replace with your actual TMDb API key
+  const apiKey = APIKEY; // Use the already defined API key
   const genre = "28"; // Action genre ID
   const language = "en-US"; // Response language
 
@@ -128,23 +131,10 @@ function showMovies(movies) {
     const movieEl = document.createElement("div");
     movieEl.classList.add("movie");
 
-    // Placeholder image while loading
-    const placeholder = document.createElement("div");
-    placeholder.classList.add("thumbnail-placeholder");
-
-    // Actual image element
     const img = document.createElement("img");
     img.src = poster_path ? `${IMGPATH + poster_path}` : DEFAULT_IMG;
     img.alt = title;
-    img.style.display = "none"; // Hide image initially
 
-    // Display image only after it has fully loaded
-    img.onload = () => {
-      placeholder.style.display = "none"; // Hide placeholder
-      img.style.display = "block"; // Show the loaded image
-    };
-
-    // Movie content
     const movieInfo = document.createElement("div");
     movieInfo.classList.add("movie-info");
     movieInfo.innerHTML = `
@@ -156,13 +146,10 @@ function showMovies(movies) {
     movieOverview.classList.add("overview");
     movieOverview.innerHTML = `<h2>Overview:</h2>${overview}`;
 
-    // Append elements to movie container
-    movieEl.appendChild(placeholder);
     movieEl.appendChild(img);
     movieEl.appendChild(movieInfo);
     movieEl.appendChild(movieOverview);
-
-    main.appendChild(movieEl); // Add movie to main container
+    main.appendChild(movieEl);
   });
 }
 
