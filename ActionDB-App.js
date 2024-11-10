@@ -22,13 +22,13 @@ let currentPage = 1;
 let currentLink = APIURL;
 
 // Function to fetch movies with a dynamic SEARCHTERM
-function searchMovies(searchTerm) {
+function searchMovies(platformTitle='', searchTerm='') {
   let url;
   
-  if (searchTerm) {
-    url = urlByPlatform(searchTerm.toLowerCase());
+  if (platformTitle) {
+    url = urlByPlatform(platformTitle.toLowerCase());
   } else {
-    url = APIURL;
+    url = `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}&include_adult=false`;
   }
 
   currentLink = url;
@@ -48,32 +48,17 @@ function urlByPlatform(platform) {
     case "netflix":
       platformID = "8";
       break;
-    case "amazon-prime-video":
-      platformID = "119";
-      break;
     case "disney-plus":
       platformID = "337";
       break;
     case "apple-tv-plus":
       platformID = "350";
       break;
-    case "hbo-max":
-      platformID = "384";
-      break;
     case "paramount-plus":
       platformID = "531";
       break;
     case "hulu":
       platformID = "15";
-      break;
-    case "peacock":
-      platformID = "384";
-      break;
-    case "discovery-plus":
-      platformID = "637";
-      break;
-    case "showtime":
-      platformID = "37";
       break;
     case "starz":
       platformID = "43";
