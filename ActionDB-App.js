@@ -82,7 +82,7 @@ function urlByPlatform(platform) {
       platformID = "43";
       break;
     default:
-      region = "8";
+      platformID = "8";
   }
 
   // Construct the TMDb URL
