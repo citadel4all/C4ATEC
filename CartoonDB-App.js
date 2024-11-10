@@ -1,6 +1,8 @@
 const APIKEY = '04c35731a5ee918f014970082a0088b1';
 const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&query=family-friendly+anime&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false`;
 const IMGPATH = "https://image.tmdb.org/t/p/w1280";
+const DEFAULT_IMG = "https://via.placeholder.com/500x750?text=No+Image+Available";
+
 const main = document.getElementById("main-display");
 const pagination = document.createElement("div");
 pagination.classList.add("pagination");
@@ -17,26 +19,77 @@ nextButton.textContent = "Next";
 pagination.appendChild(nextButton);
 
 let currentPage = 1;
+let currentLink = APIURL;
 
-// Function to fetch movies with a dynamic SEARCHTERM
-function searchMovies(searchTerm) {
-  const url = searchTerm
-    ? `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}&include_adult=false`
-    : APIURL;
-  currentPage = 1; // Reset to the first page for new search
-  getMovies(url, currentPage);
+// Function to fetch movies with dynamic search terms
+function searchMovies(platformTitle = '', searchTerm = '') {
+  let url;
+  
+  if (platformTitle) {
+    url = urlByPlatform(platformTitle.toLowerCase());
+  } else if (searchTerm) {
+    url = `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}&include_adult=false`;
+  } else {
+    url = APIURL;
+  }
+
+  currentLink = url;
+  currentPage = 1;
+  getMovies(currentLink, currentPage);
+}
+
+function urlByPlatform(platform) {
+  const baseUrl = "https://api.themoviedb.org/3/discover/movie";
+  const genre = "16";
+  const language = "en-US";
+  let platformID;
+
+  switch (platform) {
+    case "netflix":
+      platformID = "8";
+      break;
+    case "disney-plus":
+      platformID = "337";
+      break;
+    case "apple-tv-plus":
+      platformID = "350";
+      break;
+    case "paramount-plus":
+      platformID = "531";
+      break;
+    case "hulu":
+      platformID = "15";
+      break;
+    case "starz":
+      platformID = "43";
+      break;
+    default:
+      platformID = "8"; // Default to Netflix
+  }
+
+  // Construct the TMDb URL
+  const url = `${baseUrl}?api_key=${APIKEY}&language=${language}&sort_by=popularity.desc&include_adult=false&with_genres=${genre}&with_watch_providers=${platformID}&watch_region=US`;
+  
+  return url;
 }
 
 async function getMovies(url, page = 1) {
-  main.innerHTML = ""; // Clear previous content
+  main.innerHTML = "<p>Loading movies...</p>";
   try {
     const resp = await fetch(`${url}&page=${page}`);
     const respData = await resp.json();
+
+    main.innerHTML = ""; // Clear previous content
+
+    if (!respData.results || respData.results.length === 0) {
+      main.innerHTML = "<p>No movies found. Try a different search.</p>";
+      return;
+    }
+
     showMovies(respData.results);
-    
-    // Enable/Disable buttons based on page number
+
     prevButton.disabled = page === 1;
-    nextButton.disabled = page === respData.total_pages;
+    nextButton.disabled = page >= respData.total_pages;
   } catch (error) {
     console.error("Failed to fetch movies:", error);
     main.innerHTML = "<p>Failed to load movies. Please try again later.</p>";
@@ -44,32 +97,18 @@ async function getMovies(url, page = 1) {
 }
 
 function showMovies(movies) {
-  main.innerHTML = ""; // Clear previous content
+  main.innerHTML = "";
 
   movies.forEach((movie) => {
     const { poster_path, title, vote_average, overview } = movie;
 
-    // Create movie element
     const movieEl = document.createElement("div");
     movieEl.classList.add("movie");
 
-    // Placeholder image while loading
-    const placeholder = document.createElement("div");
-    placeholder.classList.add("thumbnail-placeholder");
-
-    // Actual image element
     const img = document.createElement("img");
-    img.src = `${IMGPATH + poster_path}`;
+    img.src = poster_path ? `${IMGPATH + poster_path}` : DEFAULT_IMG;
     img.alt = title;
-    img.style.display = "none"; // Hide image initially
 
-    // Display image only after it has fully loaded
-    img.onload = () => {
-      placeholder.style.display = "none"; // Hide placeholder
-      img.style.display = "block"; // Show the loaded image
-    };
-
-    // Movie content
     const movieInfo = document.createElement("div");
     movieInfo.classList.add("movie-info");
     movieInfo.innerHTML = `
@@ -81,13 +120,10 @@ function showMovies(movies) {
     movieOverview.classList.add("overview");
     movieOverview.innerHTML = `<h2>Overview:</h2>${overview}`;
 
-    // Append elements to movie container
-    movieEl.appendChild(placeholder);
     movieEl.appendChild(img);
     movieEl.appendChild(movieInfo);
     movieEl.appendChild(movieOverview);
-
-    main.appendChild(movieEl); // Add movie to main container
+    main.appendChild(movieEl);
   });
 }
 
@@ -97,15 +133,14 @@ function getClassByRate(vote) {
   else return 'red';
 }
 
-// Pagination buttons event listeners
 nextButton.addEventListener("click", () => {
   currentPage++;
-  getMovies(APIURL, currentPage);
+  getMovies(currentLink, currentPage);
 });
 
 prevButton.addEventListener("click", () => {
   if (currentPage > 1) {
     currentPage--;
-    getMovies(APIURL, currentPage);
+    getMovies(currentLink, currentPage);
   }
-});
+});      
