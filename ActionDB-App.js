@@ -25,7 +25,6 @@ let currentLink = APIURL;
 function searchMovies(searchTerm) {
   let url;
   
-  // Use urlByIndustry function only if searchTerm is present
   if (searchTerm) {
     url = urlByPlatform(searchTerm.toLowerCase());
   } else {
@@ -33,20 +32,18 @@ function searchMovies(searchTerm) {
   }
 
   currentLink = url;
-  currentPage = 1; // Reset to the first page for new search
+  currentPage = 1;
   getMovies(currentLink, currentPage);
 }
 
 function urlByPlatform(platform) {
   const baseUrl = "https://api.themoviedb.org/3/discover/movie";
-  const apiKey = APIKEY; // Use the already defined API key
+  const apiKey = APIKEY;
   const adult = "false";
-  const genre = "28"; // Action genre ID
-  const language = "en-US"; // Response language
-
-  let platformID = "8";
-
-  // Determine the region and language based on the industry
+  const genre = "28";
+  const language = "en-US";
+  
+  let platformID;
   switch (platform) {
     case "netflix":
       platformID = "8";
@@ -78,16 +75,16 @@ function urlByPlatform(platform) {
     case "showtime":
       platformID = "37";
       break;
-      case "starz":
+    case "starz":
       platformID = "43";
       break;
     default:
-      platformID = "8";
+      platformID = "8"; // Default to Netflix if no match
   }
 
   // Construct the TMDb URL
   const url = `${baseUrl}?api_key=${apiKey}&language=${language}&sort_by=popularity.desc&include_adult=${adult}&with_genres=${genre}&with_watch_providers=${platformID}&watch_region=US`;
-
+  
   return url;
 }
 
@@ -97,6 +94,8 @@ async function getMovies(url, page = 1) {
     const resp = await fetch(`${url}&page=${page}`);
     const respData = await resp.json();
     
+    main.innerHTML = ""; // Clear previous content
+
     if (respData.results.length === 0) {
       main.innerHTML = "<p>No movies found. Try a different search.</p>";
       return;
@@ -104,9 +103,8 @@ async function getMovies(url, page = 1) {
     
     showMovies(respData.results);
     
-    // Enable/Disable buttons based on page number
     prevButton.disabled = page === 1;
-    nextButton.disabled = page === respData.total_pages;
+    nextButton.disabled = page >= respData.total_pages;
   } catch (error) {
     console.error("Failed to fetch movies:", error);
     main.innerHTML = "<p>Failed to load movies. Please try again later.</p>";
@@ -119,7 +117,6 @@ function showMovies(movies) {
   movies.forEach((movie) => {
     const { poster_path, title, vote_average, overview } = movie;
 
-    // Create movie element
     const movieEl = document.createElement("div");
     movieEl.classList.add("movie");
 
@@ -151,7 +148,6 @@ function getClassByRate(vote) {
   else return 'red';
 }
 
-// Pagination buttons event listeners
 nextButton.addEventListener("click", () => {
   currentPage++;
   getMovies(currentLink, currentPage);
