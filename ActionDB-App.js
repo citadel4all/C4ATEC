@@ -27,7 +27,7 @@ function searchMovies(searchTerm) {
   
   // Use urlByIndustry function only if searchTerm is present
   if (searchTerm) {
-    url = urlByIndustry(searchTerm.toLowerCase());
+    url = urlByPlatform(searchTerm.toLowerCase());
   } else {
     url = APIURL;
   }
@@ -37,64 +37,56 @@ function searchMovies(searchTerm) {
   getMovies(currentLink, currentPage);
 }
 
-function urlByIndustry(industry) {
+function urlByPlatform(platform) {
   const baseUrl = "https://api.themoviedb.org/3/discover/movie";
   const apiKey = APIKEY; // Use the already defined API key
+  const adult = "false";
   const genre = "28"; // Action genre ID
   const language = "en-US"; // Response language
 
-  let region = "US";
-  let originalLanguage = "en";
+  let platformID = "8";
 
   // Determine the region and language based on the industry
-  switch (industry) {
-    case "hollywood":
-      region = "US";
-      originalLanguage = "en";
+  switch (platform) {
+    case "netflix":
+      platformID = "8";
       break;
-    case "bollywood":
-      region = "IN";
-      originalLanguage = "hi";
+    case "amazon-prime-video":
+      platformID = "119";
       break;
-    case "nollywood":
-      region = "NG";
-      originalLanguage = "en";
+    case "disney-plus":
+      platformID = "337";
       break;
-    case "chinese":
-      region = "CN";
-      originalLanguage = "zh";
+    case "apple-tv-plus":
+      platformID = "350";
       break;
-    case "south-korean":
-      region = "KR";
-      originalLanguage = "ko";
+    case "hbo-max":
+      platformID = "384";
       break;
-    case "japanese":
-      region = "JP";
-      originalLanguage = "ja";
+    case "paramount-plus":
+      platformID = "531";
       break;
-    case "australian":
-      region = "AU";
-      originalLanguage = "en";
+    case "hulu":
+      platformID = "15";
       break;
-    case "canadian":
-      region = "CA";
-      originalLanguage = "fr";
+    case "peacock":
+      platformID = "384";
       break;
-    case "mexican":
-      region = "MX";
-      originalLanguage = "es";
+    case "discovery-plus":
+      platformID = "637";
       break;
-    case "argentine":
-      region = "AR";
-      originalLanguage = "es";
+    case "showtime":
+      platformID = "37";
+      break;
+      case "starz":
+      platformID = "43";
       break;
     default:
-      region = "US";
-      originalLanguage = "en";
+      region = "8";
   }
 
   // Construct the TMDb URL
-  const url = `${baseUrl}?api_key=${apiKey}&with_genres=${genre}&language=${language}&region=${region}&sort_by=popularity.desc&original_language=${originalLanguage}`;
+  const url = `${baseUrl}?api_key=${apiKey}&language=${language}&sort_by=popularity.desc&include_adult=${adult}&with_genres=${genre}&with_watch_providers=${watchProvider}&watch_region=US`;
 
   return url;
 }
