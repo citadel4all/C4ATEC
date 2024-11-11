@@ -1,21 +1,21 @@
 const APIKEY = '04c35731a5ee918f014970082a0088b1';
 const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&query=family-friendly+anime&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false`;
-const IMGPATH = "https://image.tmdb.org/t/p/w1280";
-const DEFAULT_IMG = "https://via.placeholder.com/500x750?text=No+Image+Available";
+const IMGPATH = 'https://image.tmdb.org/t/p/w1280';
+const DEFAULT_IMG = 'https://via.placeholder.com/500x750?text=No+Image+Available';
 
-const main = document.getElementById("main-display");
-const pagination = document.createElement("div");
-pagination.classList.add("pagination");
+const main = document.getElementById('main-display');
+const pagination = document.createElement('div');
+pagination.classList.add('pagination');
 document.body.appendChild(pagination);
 
 // Create Previous and Next buttons
-const prevButton = document.createElement("button");
-prevButton.textContent = "Previous";
+const prevButton = document.createElement('button');
+prevButton.textContent = 'Previous';
 prevButton.disabled = true;
 pagination.appendChild(prevButton);
 
-const nextButton = document.createElement("button");
-nextButton.textContent = "Next";
+const nextButton = document.createElement('button');
+nextButton.textContent = 'Next';
 pagination.appendChild(nextButton);
 
 let currentPage = 1;
@@ -28,7 +28,7 @@ function searchMovies(platformTitle = '', searchTerm = '') {
   if (platformTitle) {
     url = urlByPlatform(platformTitle.toLowerCase());
   } else if (searchTerm) {
-    url = `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}+anime&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false``;
+    url = 'https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}+anime&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false';
   } else {
     url = APIURL;
   }
@@ -39,50 +39,50 @@ function searchMovies(platformTitle = '', searchTerm = '') {
 }
 
 function urlByPlatform(platform) {
-  const baseUrl = "https://api.themoviedb.org/3/discover/movie";
-  const genre = "16";
-  const language = "en-US";
+  const baseUrl = 'https://api.themoviedb.org/3/discover/movie';
+  const genre = '16';
+  const language = 'en-US';
   let platformID;
 
   switch (platform) {
-    case "netflix":
-      platformID = "8";
+    case 'netflix':
+      platformID = '8';
       break;
-    case "disney-plus":
-      platformID = "337";
+    case 'disney-plus':
+      platformID = '337';
       break;
-    case "apple-tv-plus":
-      platformID = "350";
+    case 'apple-tv-plus':
+      platformID = '350';
       break;
-    case "paramount-plus":
-      platformID = "531";
+    case 'paramount-plus':
+      platformID = '531';
       break;
-    case "hulu":
-      platformID = "15";
+    case 'hulu':
+      platformID = '15';
       break;
-    case "starz":
-      platformID = "43";
+    case 'starz':
+      platformID = '43';
       break;
     default:
-      platformID = "8"; // Default to Netflix
+      platformID = '8'; // Default to Netflix
   }
 
   // Construct the TMDb URL
-  const url = `${baseUrl}?api_key=${APIKEY}&language=${language}&sort_by=popularity.desc&include_adult=false&with_genres=${genre}&with_watch_providers=${platformID}&watch_region=US`;
+  const url = '${baseUrl}?api_key=${APIKEY}&language=${language}&sort_by=popularity.desc&include_adult=false&with_genres=${genre}&with_watch_providers=${platformID}&watch_region=US';
   
   return url;
 }
 
 async function getMovies(url, page = 1) {
-  main.innerHTML = "<p>Loading movies...</p>";
+  main.innerHTML = '<p>Loading movies...</p>';
   try {
-    const resp = await fetch(`${url}&page=${page}`);
+    const resp = await fetch('${url}&page=${page}');
     const respData = await resp.json();
 
-    main.innerHTML = ""; // Clear previous content
+    main.innerHTML = ''; // Clear previous content
 
     if (!respData.results || respData.results.length === 0) {
-      main.innerHTML = "<p>No movies found. Try a different search.</p>";
+      main.innerHTML = '<p>No movies found. Try a different search.</p>';
       return;
     }
 
@@ -91,34 +91,34 @@ async function getMovies(url, page = 1) {
     prevButton.disabled = page === 1;
     nextButton.disabled = page >= respData.total_pages;
   } catch (error) {
-    console.error("Failed to fetch movies:", error);
-    main.innerHTML = "<p>Failed to load movies. Please try again later.</p>";
+    console.error('Failed to fetch movies:', error);
+    main.innerHTML = '<p>Failed to load movies. Please try again later.</p>';
   }
 }
 
 function showMovies(movies) {
-  main.innerHTML = "";
+  main.innerHTML = '';
 
   movies.forEach((movie) => {
     const { poster_path, title, vote_average, overview } = movie;
 
-    const movieEl = document.createElement("div");
-    movieEl.classList.add("movie");
+    const movieEl = document.createElement('div');
+    movieEl.classList.add('movie');
 
-    const img = document.createElement("img");
-    img.src = poster_path ? `${IMGPATH + poster_path}` : DEFAULT_IMG;
+    const img = document.createElement('img');
+    img.src = poster_path ? '${IMGPATH + poster_path}' : DEFAULT_IMG;
     img.alt = title;
 
-    const movieInfo = document.createElement("div");
-    movieInfo.classList.add("movie-info");
-    movieInfo.innerHTML = `
+    const movieInfo = document.createElement('div');
+    movieInfo.classList.add('movie-info');
+    movieInfo.innerHTML = '
       <h3>${title}</h3>
       <span class="${getClassByRate(vote_average)}">${vote_average}</span>
-    `;
+    ';
 
-    const movieOverview = document.createElement("div");
-    movieOverview.classList.add("overview");
-    movieOverview.innerHTML = `<h2>Overview:</h2>${overview}`;
+    const movieOverview = document.createElement('div');
+    movieOverview.classList.add('overview');
+    movieOverview.innerHTML = '<h2>Overview:</h2>${overview}';
 
     movieEl.appendChild(img);
     movieEl.appendChild(movieInfo);
@@ -133,12 +133,12 @@ function getClassByRate(vote) {
   else return 'red';
 }
 
-nextButton.addEventListener("click", () => {
+nextButton.addEventListener('click', () => {
   currentPage++;
   getMovies(currentLink, currentPage);
 });
 
-prevButton.addEventListener("click", () => {
+prevButton.addEventListener('click', () => {
   if (currentPage > 1) {
     currentPage--;
     getMovies(currentLink, currentPage);
