@@ -28,7 +28,7 @@ function searchMovies(platformTitle = '', searchTerm = '') {
   if (platformTitle) {
     url = urlByPlatform(platformTitle.toLowerCase());
   } else if (searchTerm) {
-    url = 'https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}+anime&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false';
+    url = 'https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${encodeURIComponent(searchTerm)}&with_genres=16&certification_country=US&certification.lte=PG&include_adult=false';
   } else {
     url = APIURL;
   }
