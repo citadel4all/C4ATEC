@@ -1,5 +1,5 @@
 const APIKEY = '04c35731a5ee918f014970082a0088b1';
-const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&with_genres=28&certification_country=US&certification.lte=PG&include_adult=false`;
+const APIURL = `https://api.themoviedb.org/3/discover/movie?api_key=${APIKEY}&with_genres=28&certification_country=US&certification.gte=PG&include_adult=false`;
 const IMGPATH = "https://image.tmdb.org/t/p/w1280";
 const DEFAULT_IMG = "https://via.placeholder.com/500x750?text=No+Image+Available";
 
